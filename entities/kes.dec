@@ -1,0 +1,171 @@
+//=============================================================================
+// kes.dec - entities of the KES engine (engine/ent_*.h).
+//
+// Class names are the engine's registered class names (World::RegisterBuiltInEntityClasses)
+// and keys are the names Entity::ApplyProperty() handles, so compiled maps need no translation.
+//
+//   * colours are 0..1 floats ("1 0.9 0.8"), not 0..255
+//   * distances in keyvalues (Range, Near, Far...) are in meters
+//   * positions, angles and brushes are converted from editor space by the engine
+//     (1 editor unit = ENGINE_MAP_UNIT_SCALE meters, 0.0254 by default)
+//=============================================================================
+@include "base.dec"
+
+// ---------------------------------------------------------------- point entities
+@PointClass base(Targetname, Angles) color(0 255 0) size(-14 -14 -50, 14 14 50)
+	= PlayerStartEntity : "Player spawn. The box is the player volume; the player's eyes start at its centre."
+[
+]
+
+@PointClass base(Targetname, Angles, Kill) color(255 220 80) size(-6 -6 -6, 6 6 6)
+	= LightEntity : "Light."
+[
+	Type(choices) : "Type" : "Point" =
+	[
+		"Point" : "Point"
+		"Spot" : "Spot"
+		"Directional" : "Directional"
+	]
+	Color(vector) : "Color (0-1)" : "1 1 1"
+	Intensity(float) : "Intensity" : 1
+	Range(float) : "Range (m)" : 10 : "Point/spot reach."
+	SpotAngle(float) : "Spot Angle" : 45 : "Full cone angle in degrees."
+	CastShadows(choices) : "Cast Shadows" : "" : "Default: spot and directional lights cast shadows, point lights don't." =
+	[
+		"" : "Default"
+		"1" : "Yes"
+		"0" : "No"
+	]
+
+	input TurnOn(void) : "Turn the light on."
+	input TurnOff(void) : "Turn the light off."
+	input Toggle(void) : "Toggle the light."
+	input SetIntensity(float) : "Set the brightness multiplier."
+]
+
+@PointClass base(Targetname, Angles) color(120 180 255) size(-10 -10 -10, 10 10 10)
+	= SkyboxEntity : "Procedural gradient sky. Angles set the sun direction."
+[
+	TopColor(vector) : "Top Color" : "0.09 0.16 0.29"
+	HorizonColor(vector) : "Horizon Color" : "0.52 0.62 0.78"
+	BottomColor(vector) : "Bottom Color" : "0.03 0.03 0.05"
+	SunColor(vector) : "Sun Color" : "1 0.94 0.82"
+	SunSize(float) : "Sun Size" : 2.5 : "Sun disc size in degrees."
+	SunIntensity(float) : "Sun Intensity" : 1.15
+	HorizonExponent(float) : "Horizon Exponent" : 1.6
+	AmbientIntensity(float) : "Ambient Intensity" : 1 : "Scales the sky's ambient light and reflections."
+	Active(boolean) : "Active" : 1
+]
+
+@PointClass base(Targetname, Angles, Kill) color(200 200 200) size(-8 -8 -8, 8 8 8)
+	= CameraEntity : "Camera the game can switch to."
+[
+	Active(boolean) : "Active" : 0 : "Becomes the active camera when the map starts."
+	PlayerControlled(boolean) : "Player Controlled" : 0
+
+	input Activate(void) : "Make this the active camera."
+	input Deactivate(void) : "Stop being the active camera."
+]
+
+@PointClass base(Targetname, Kill) color(255 150 0) size(-6 -6 -6, 6 6 6)
+	= AudioSourceEntity : "Plays a sound."
+[
+	Sound(sound) : "Sound" : : "Sound asset (.ksound)"
+	Volume(float) : "Volume" : 1
+	Pitch(float) : "Pitch" : 1
+	Attenuation(float) : "Attenuation" : 1
+	Loop(boolean) : "Loop" : 0 : "Looping sounds start with the map."
+	AutoPlay(boolean) : "Auto Play" : 0 : "Start with the map."
+	Spatial(boolean) : "3D" : 1
+
+	input Play(void) : "Start the sound (restarts it if playing)."
+	input Stop(void) : "Stop the sound."
+	input Toggle(void) : "Play if stopped, stop if playing."
+]
+
+@PointClass base(Targetname, EnableDisable, Kill) color(0 220 160) size(-8 -8 -8, 8 8 8)
+	= LogicRelayEntity : "Trigger fires OnTrigger, so one event can drive many links."
+[
+	input Trigger(void) : "Fire OnTrigger (when enabled)."
+	output OnTrigger(void) : "Fired by the Trigger input."
+]
+
+@PointClass base(Targetname, Kill) color(0 220 160) size(-8 -8 -8, 8 8 8)
+	= LogicAutoEntity : "Fires OnMapSpawn once when the map starts."
+[
+	output OnMapSpawn(void) : "Fired after every map entity has started."
+]
+
+@PointClass base(Targetname, Angles, RigidBody) color(200 120 255) size(-16 -16 -16, 16 16 16)
+	= StaticMeshEntity : "Model without animation (.kmodel)."
+[
+	Model(studio) : "Model" : : "Mesh asset (.kmodel)"
+	Material(material) : "Material" : : "Material asset (.mat)"
+	Scale(vector) : "Scale" : "1 1 1"
+	Collider(choices) : "Collider" : "" : "Collider fitted to the mesh bounds." =
+	[
+		"" : "None"
+		"Box" : "Box"
+		"Sphere" : "Sphere"
+	]
+]
+
+@PointClass base(Targetname, Angles, RigidBody) color(220 100 255) size(-16 -16 -16, 16 16 16)
+	= SkinnedModelEntity : "Animated model (.kmodel with bones)."
+[
+	Model(studio) : "Model" : : "Mesh asset (.kmodel)"
+	Material(material) : "Material" : : "Material asset (.mat)"
+	Scale(vector) : "Scale" : "1 1 1"
+	AnimGraph(string) : "Animation Graph" : : "Animation graph asset (.kagraph)"
+	AnimClip(string) : "Animation Clip" : : "Clip to play without a graph (.kanim)"
+	Collider(choices) : "Collider" : "" : "Collider fitted to the mesh bounds." =
+	[
+		"" : "None"
+		"Box" : "Box"
+		"Sphere" : "Sphere"
+	]
+]
+
+// ---------------------------------------------------------------- solid entities
+// Solid entities get "Size" from their brush bounds automatically.
+
+@SolidClass base(Targetname, RigidBody, Kill) color(0 160 255)
+	= BrushEntity : "Brush geometry owned by an entity, so it can move, hide or toggle."
+[
+	Solid(boolean) : "Solid" : 1 : "Collide with the brushes."
+	Visible(boolean) : "Visible" : 1 : "Render the brushes."
+
+	input Enable(void) : "Show the brushes and turn collision on."
+	input Disable(void) : "Hide the brushes and turn collision off."
+	input Toggle(void) : "Enable if disabled, otherwise disable."
+	input Show(void) : "Render the brushes."
+	input Hide(void) : "Stop rendering the brushes."
+	input EnableCollision(void) : "Collide with the brushes."
+	input DisableCollision(void) : "Stop colliding with the brushes."
+]
+
+@SolidClass base(Targetname, EnableDisable, Kill) color(255 120 0)
+	= TriggerEntity : "Fires outputs (and runs engine commands) when entities enter or leave the volume."
+[
+	Filter(string) : "Filter Tag" : "Player" : "Tag an entity needs to count; empty = every entity."
+	OnEntityEnter(string) : "On Enter" : : "Engine command, e.g. map maps/level2.fmapc"
+	OnEntityExit(string) : "On Exit" : : "Engine command."
+
+	output OnStartTouch(void) : "An entity entered. Activator = that entity."
+	output OnEndTouch(void) : "An entity left. Activator = that entity."
+]
+
+@SolidClass base(Targetname, Kill) color(140 160 190)
+	= FogVolumeEntity : "Stepped distance fog while the camera is inside the volume."
+[
+	Color(vector) : "Fog Color" : "0.45 0.49 0.55"
+	Near(float) : "Start (m)" : 6
+	Far(float) : "End (m)" : 18
+	Steps(float) : "Steps" : 10 : "Number of fog bands (1 = smooth)."
+	Priority(integer) : "Priority" : 0 : "Higher wins when volumes overlap."
+	Active(boolean) : "Active" : 1
+
+	input Enable(void) : "Turn the fog on."
+	input Disable(void) : "Turn the fog off."
+	input Toggle(void) : "Toggle the fog."
+]

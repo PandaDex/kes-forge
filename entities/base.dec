@@ -1,0 +1,59 @@
+//=============================================================================
+// base.dec - base classes shared by kes.dec.
+//
+// SYNTAX
+//   @PointClass / @SolidClass / @BaseClass  [modifiers] = classname : "description"
+//   [
+//       key(type) : "Display Name" : default : "help text"
+//       key(choices) : "Name" : 0 = [ 0 : "A"  1 : "B" ]
+//       input  Name(void) : "help"
+//       output Name(void) : "help"
+//   ]
+//
+// MODIFIERS
+//   base(A, B)             inherit properties + I/O from other classes
+//   color(r g b)           editor colour
+//   size(x y z, x y z)     point-entity bounding box (or size(x y z) = centred full size)
+//
+// PROPERTY TYPES
+//   string integer float boolean choices flags color255 vector angle
+//   target_source (this entity's name)   target_destination (picks another entity's name)
+//   studio material sound sprite (asset paths with a browse button)
+//
+// Keys must match what the engine entity reads in ApplyProperty(), and inputs/outputs
+// what its GetMapScriptPorts() lists.
+//=============================================================================
+
+@BaseClass = Targetname
+[
+	targetname(target_source) : "Name" : : "Also the entity's first tag."
+	Tags(string) : "Tags" : : "Extra tags, separated by spaces or commas."
+]
+
+@BaseClass = Angles
+[
+	angles(angle) : "Pitch Yaw Roll" : "0 0 0"
+]
+
+@BaseClass = EnableDisable
+[
+	StartDisabled(boolean) : "Start Disabled" : 0
+
+	input Enable(void) : "Enable this entity."
+	input Disable(void) : "Disable this entity."
+	input Toggle(void) : "Toggle between enabled and disabled."
+]
+
+@BaseClass = Kill
+[
+	input Kill(void) : "Remove this entity from the world."
+]
+
+@BaseClass = RigidBody
+[
+	Dynamic(boolean) : "Dynamic" : 0 : "Simulate as a rigid body. Off = static collision."
+	Density(float) : "Density" : 500 : "kg per cubic meter (dynamic only)."
+	Friction(float) : "Friction" : 0.6
+	Restitution(float) : "Restitution" : 0 : "Bounciness."
+	RollingResistance(float) : "Rolling Resistance" : 0.1 : "Stops spheres rolling forever."
+]
