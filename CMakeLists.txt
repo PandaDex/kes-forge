@@ -17,26 +17,11 @@ endif()
 
 target_include_directories(forge PRIVATE src)
 target_link_libraries(forge PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGL Qt6::OpenGLWidgets)
-target_compile_definitions(forge PRIVATE FORGE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+target_compile_definitions(forge PRIVATE FORGE_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
 if(WIN32)
     target_sources(forge PRIVATE ./resource/app.rc)
-
-    find_program(WINDEPLOYQT_EXECUTABLE windeployqt6
-            HINTS "${Qt6_DIR}/../../../bin"
-    )
-
-    if(WINDEPLOYQT_EXECUTABLE)
-        add_custom_command(TARGET forge POST_BUILD
-                COMMAND "${WINDEPLOYQT_EXECUTABLE}" "$<TARGET_FILE:forge>"
-                COMMENT "Deploying Qt dependencies with windeployqt6"
-        )
-    else()
-        message(WARNING "windeployqt6 not found; Qt deployment skipped")
-    endif()
 endif()
 
 
-add_custom_command(TARGET forge POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/entities $<TARGET_FILE_DIR:forge>/entities
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/content  $<TARGET_FILE_DIR:forge>/content)
+add_custom_command(TARGET forge POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/entities $<TARGET_FILE_DIR:forge>/entities)

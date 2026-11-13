@@ -19,6 +19,9 @@ const QMap<QString, QString> kAssetEditors = {
     { "fmap", "@forge" },
     { "mat", "kesShaderGraph" },
     { "slangnodes", "kesShaderGraph" },
+    { "kmodel", "kesModelEditor" },
+    { "kanimgraph", "kesModelEditor" },
+    { "imap", "kesInputEditor" },
 
     { "rml", "code {root} {file}|notepad" },
     { "rcss", "code {root} {file}|notepad" },
@@ -28,7 +31,6 @@ const QMap<QString, QString> kAssetEditors = {
     { "kproject", "code {root} {file}|notepad" },
     { "ini", "code {root} {file}|notepad" },
     { "txt", "code {root} {file}|notepad" },
-    { "imap", "code {root} {file}|notepad" },
 
     { "png", "@system" },
     { "jpg", "@system" },
@@ -44,7 +46,6 @@ const QMap<QString, QString> kAssetEditors = {
     { "fbx", "@system" },
     { "obj", "@system" },
 
-    // {"kmodel",  "modelViewer {file}"},
 };
 
 const QStringList kToolSearchDirs = {
@@ -55,6 +56,8 @@ const QStringList kToolSearchDirs = {
     "../out/build/dev/engine/tools/model-importer/RelWithDebInfo",
     "../tools/shaderGraph/build/Debug",
     "../tools/shaderGraph/build/Release",
+    "../out/build/modelEditor/Debug",
+    "../out/build/modelEditor/Release",
 };
 
 const QString kImporterProgram = "model-importer";
