@@ -10,6 +10,7 @@
 #include "ui/EntityClassDialog.h"
 #include "ui/OutlinerPanel.h"
 #include "ui/PropertiesPanel.h"
+#include "ui/KesStyle.h"
 #include "ui/Theme.h"
 #include <QActionGroup>
 #include <QApplication>
@@ -103,16 +104,18 @@ void MainWindow::disconnectChildSignals()
 void MainWindow::createActions()
 {
     auto* doc = m_ctx->doc();
-    auto mk = [this](const QString& text, const QKeySequence& key = {})
+    auto mk = [this](const QString& text, const QKeySequence& key = {}, const QString& icon = {})
     {
         auto* a = new QAction(text, this);
+        if (!icon.isEmpty())
+            a->setIcon(kes::style::icon(icon));
         if (!key.isEmpty())
             a->setShortcut(key);
         return a;
     };
-    m_newAct = mk(tr("&New"), QKeySequence::New);
-    m_openAct = mk(tr("&Open..."), QKeySequence::Open);
-    m_saveAct = mk(tr("&Save"), QKeySequence::Save);
+    m_newAct = mk(tr("&New"), QKeySequence::New, "new");
+    m_openAct = mk(tr("&Open..."), QKeySequence::Open, "open");
+    m_saveAct = mk(tr("&Save"), QKeySequence::Save, "save");
     m_saveAsAct = mk(tr("Save &As..."), QKeySequence::SaveAs);
     m_quitAct = mk(tr("&Quit"), QKeySequence::Quit);
     connect(m_newAct, &QAction::triggered, this, &MainWindow::newMap);
@@ -125,8 +128,8 @@ void MainWindow::createActions()
 
     // Undo/redo go through toolBusy() so they can't fire in the middle of a drag.
     QUndoStack* stack = doc->undoStack();
-    m_undoAct = mk(tr("&Undo"), QKeySequence::Undo);
-    m_redoAct = mk(tr("&Redo"));
+    m_undoAct = mk(tr("&Undo"), QKeySequence::Undo, "undo");
+    m_redoAct = mk(tr("&Redo"), {}, "redo");
     m_redoAct->setShortcuts({ QKeySequence::Redo, QKeySequence("Ctrl+Y") });
     m_undoAct->setEnabled(stack->canUndo());
     m_redoAct->setEnabled(stack->canRedo());
@@ -378,6 +381,7 @@ void MainWindow::createToolbars()
     auto* top = new QToolBar(tr("Main"), this);
     top->setObjectName("mainBar");
     top->setMovable(false);
+    top->setIconSize(QSize(18, 18));
     top->addActions({ m_newAct, m_openAct, m_saveAct });
     top->addSeparator();
     top->addActions({ m_undoAct, m_redoAct });
@@ -613,7 +617,7 @@ void MainWindow::updateTitle()
     const QString p = m_ctx->doc()->filePath();
     const QString map = p.isEmpty() ? tr("untitled") : QFileInfo(p).fileName();
     const QString project = m_ctx->project().isValid() ? m_ctx->project().name : tr("no project");
-    setWindowTitle(QString("%1[*] - %2 - Forge").arg(map, project));
+    setWindowTitle(kes::style::windowTitle(QString("%1 (%2)").arg(map, project), tr("Forge")));
     setWindowModified(m_ctx->doc()->isModified());
 }
 

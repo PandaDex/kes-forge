@@ -1,4 +1,5 @@
 #include "ui/OutlinerPanel.h"
+#include "ui/KesStyle.h"
 #include "core/EditorContext.h"
 #include <QHeaderView>
 #include <QHBoxLayout>
@@ -50,6 +51,7 @@ OutlinerPanel::OutlinerPanel(EditorContext *ctx, QWidget *parent) : QWidget(pare
     layout->setContentsMargins(4, 4, 4, 4);
     m_filter = new QLineEdit(this);
     m_filter->setPlaceholderText(tr("Search..."));
+    m_filter->addAction(kes::style::icon("search"), QLineEdit::LeadingPosition);
     m_filter->setClearButtonEnabled(true);
     layout->addWidget(m_filter);
 

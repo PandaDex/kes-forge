@@ -722,7 +722,7 @@ void PropertiesPanel::rebuild()
     {
         auto *desc = new QLabel(def->description);
         desc->setWordWrap(true);
-        desc->setStyleSheet("color:#9a9aa2;");
+        desc->setObjectName("Muted");
         lay->insertWidget(1, desc);
         for (const PropertyDef &p : def->props)
         {
@@ -734,7 +734,7 @@ void PropertiesPanel::rebuild()
     else if (!o->classname.isEmpty())
     {
         auto *warn = new QLabel(tr("No definition found for class '%1'.\nAdd it to an .dec file (Tools > New Entity Class...).").arg(o->classname));
-        warn->setStyleSheet("color:#f0c040;");
+        warn->setObjectName("Warning");
         warn->setWordWrap(true);
         lay->addWidget(warn);
     }

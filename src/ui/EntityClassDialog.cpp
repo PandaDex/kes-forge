@@ -87,7 +87,7 @@ EntityClassDialog::EntityClassDialog(EditorContext *ctx, QWidget *parent) : QDia
 
     auto *note = new QLabel(tr("Saved to %1/user.dec and reloaded immediately. For choices/spawnflags, edit the .dec directly.").arg(ctx->userEntityDir()));
     note->setWordWrap(true);
-    note->setStyleSheet("color:#9a9aa2;");
+    note->setObjectName("Muted");
     lay->addWidget(note);
     auto *bb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(bb, &QDialogButtonBox::accepted, this, &QDialog::accept);

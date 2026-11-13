@@ -1,5 +1,5 @@
 #include "ui/MainWindow.h"
-#include "ui/Theme.h"
+#include "ui/KesStyle.h"
 #include "compile/MapCompiler.h"
 #include "core/EditorContext.h"
 #include <QApplication>
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     QApplication app(argc, argv);
     QApplication::setApplicationName("Forge");
     QApplication::setOrganizationName("kes");
-    Theme::apply(app);
+    kes::style::apply(app);
 
     MainWindow w;
     w.show();

@@ -1,4 +1,5 @@
 #include "ui/AssetBrowser.h"
+#include "ui/KesStyle.h"
 #include "assets/AssetEditors.h"
 #include "assets/AssetImporter.h"
 #include "assets/AssetTemplates.h"
@@ -208,6 +209,7 @@ AssetBrowser::AssetBrowser(EditorContext *ctx, AssetImporter *importer, QWidget 
 
     m_filter = new QLineEdit(this);
     m_filter->setPlaceholderText(tr("Filter files..."));
+    m_filter->addAction(kes::style::icon("search"), QLineEdit::LeadingPosition);
     m_filter->setClearButtonEnabled(true);
 
     auto *refresh = new QToolButton(this);
@@ -472,7 +474,7 @@ ConsolePanel::ConsolePanel(EditorContext *ctx, QWidget *parent) : QPlainTextEdit
     setFont(QFont("monospace", 9));
     connect(ctx, &EditorContext::logMessage, this, [this](const QString &text, int level)
             {
-        static const char* colors[3] = {"#cfcfd4", "#f0c040", "#ff6060"};
+        static const char* colors[3] = {"#dcdce0", "#f0c040", "#f06060"};
         appendHtml(QString("<span style='color:#7a7a80'>%1</span> <span style='color:%2'>%3</span>")
                        .arg(QDateTime::currentDateTime().toString("HH:mm:ss"), colors[std::clamp(level, 0, 2)], text.toHtmlEscaped())); });
 }
